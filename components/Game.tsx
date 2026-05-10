@@ -276,8 +276,8 @@ export function Game({ initialPuzzle }: Props) {
     <div className="mx-auto w-full max-w-md px-4 pt-4 pb-12">
       <header className="mb-4 flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Timeslop</h1>
-          <p className="text-sm text-zinc-500">order events on a timeline</p>
+          <h1 className="text-3xl font-semibold tracking-tight">Timeslop</h1>
+          <p className="text-base text-zinc-500">order events on a timeline</p>
         </div>
         <SessionStats stats={stats} />
       </header>
@@ -291,7 +291,7 @@ export function Game({ initialPuzzle }: Props) {
         onDragCancel={() => setActiveDragId(null)}
       >
         <section className="sticky top-0 z-10 -mx-4 px-4 pb-3 pt-2 bg-zinc-50/95 dark:bg-black/95 backdrop-blur">
-          <div className="text-xs uppercase tracking-wide text-zinc-500 mb-2">
+          <div className="text-sm uppercase tracking-wide text-zinc-500 mb-2">
             Round {roundLabel}
             {phase === "ready" && nextSlot ? " — place this event" : ""}
             {phase === "pending" ? " — drag to reposition or confirm" : ""}
@@ -307,7 +307,7 @@ export function Game({ initialPuzzle }: Props) {
                 opacity: feedbackFading ? 0 : 1,
                 transition: `opacity ${FEEDBACK_FADE_MS}ms ease-out`,
               }}
-              className={`rounded-lg border-2 px-4 py-3.5 text-center text-base font-medium ${
+              className={`rounded-lg border-2 px-4 py-4 text-center text-lg font-medium ${
                 feedbackKind === "correct"
                   ? "border-emerald-500 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300"
                   : "border-rose-400 bg-rose-50 dark:bg-rose-950/40 text-rose-700 dark:text-rose-300"
@@ -319,13 +319,13 @@ export function Game({ initialPuzzle }: Props) {
             </div>
           )}
           {phase === "done" && (
-            <div className="rounded-lg border-2 border-zinc-300 dark:border-zinc-700 px-4 py-3.5 text-center text-base">
+            <div className="rounded-lg border-2 border-zinc-300 dark:border-zinc-700 px-4 py-4 text-center text-lg">
               Done — {score}/{totalRounds} correct
             </div>
           )}
         </section>
 
-        <p className="mt-4 mb-2 text-sm text-zinc-500">Timeline · oldest at top</p>
+        <p className="mt-4 mb-2 text-base text-zinc-500">Timeline · oldest at top</p>
 
         <ol>
           <Gap key="gap-leading" id="gap-0" active={gapActive("gap-0")} />
@@ -350,7 +350,7 @@ export function Game({ initialPuzzle }: Props) {
                       <DraggableSlot slot={slot} state="pending" />
                       <button
                         onClick={confirmPlacement}
-                        className="mt-2 w-full rounded-lg bg-zinc-900 dark:bg-zinc-100 dark:text-zinc-900 text-white py-3 text-base font-medium hover:opacity-90"
+                        className="mt-2 w-full rounded-lg bg-zinc-900 dark:bg-zinc-100 dark:text-zinc-900 text-white py-3.5 text-lg font-medium hover:opacity-90"
                       >
                         Confirm placement
                       </button>
@@ -388,14 +388,14 @@ export function Game({ initialPuzzle }: Props) {
         <div className="mt-6 flex items-center justify-center gap-2">
           <button
             onClick={() => setModalOpen(true)}
-            className="rounded-lg border border-zinc-300 dark:border-zinc-700 px-5 py-3 text-base font-medium hover:bg-zinc-50 dark:hover:bg-zinc-800"
+            className="rounded-lg border border-zinc-300 dark:border-zinc-700 px-5 py-3.5 text-lg font-medium hover:bg-zinc-50 dark:hover:bg-zinc-800"
           >
             View result
           </button>
           <button
             onClick={playAgain}
             disabled={loadingNext}
-            className="rounded-lg bg-zinc-900 dark:bg-zinc-100 dark:text-zinc-900 text-white px-6 py-3 text-base font-medium disabled:opacity-50"
+            className="rounded-lg bg-zinc-900 dark:bg-zinc-100 dark:text-zinc-900 text-white px-6 py-3.5 text-lg font-medium disabled:opacity-50"
           >
             {loadingNext ? "Loading…" : "Play again"}
           </button>
