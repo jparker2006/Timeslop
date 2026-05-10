@@ -1,0 +1,337 @@
+[
+  {
+    "id": "vesuvius-erupts-pompeii",
+    "title": "Mount Vesuvius erupts, burying Pompeii and Herculaneum",
+    "date": "0079-08-24",
+    "blurb": "The eruption preserved Roman cities under volcanic ash for nearly 1,700 years.",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Eruption_of_Mount_Vesuvius_in_AD_79",
+    "era": "ancient",
+    "fame": 1
+  },
+  {
+    "id": "charlemagne-crowned",
+    "title": "Charlemagne is crowned Emperor of the Romans",
+    "date": "0800-12-25",
+    "blurb": "Pope Leo III crowned Charlemagne in St. Peter's Basilica on Christmas Day.",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Coronation_of_Charlemagne",
+    "era": "medieval",
+    "fame": 2
+  },
+  {
+    "id": "battle-of-hastings",
+    "title": "Battle of Hastings: William the Conqueror defeats King Harold II",
+    "date": "1066-10-14",
+    "blurb": "The Norman victory ended Anglo-Saxon rule of England.",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Battle_of_Hastings",
+    "era": "medieval",
+    "fame": 3
+  },
+  {
+    "id": "magna-carta-sealed",
+    "title": "King John seals the Magna Carta at Runnymede",
+    "date": "1215-06-15",
+    "blurb": "The charter limited royal power and seeded the principle of rule of law.",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Magna_Carta",
+    "era": "medieval",
+    "fame": 3
+  },
+  {
+    "id": "fall-of-constantinople",
+    "title": "Constantinople falls to Sultan Mehmed II's Ottoman forces",
+    "date": "1453-05-29",
+    "blurb": "The fall of the Byzantine capital is often used to mark the end of the Middle Ages.",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Fall_of_Constantinople",
+    "era": "medieval",
+    "fame": 2
+  },
+  {
+    "id": "gutenberg-bible-printed",
+    "title": "Johannes Gutenberg prints the Gutenberg Bible in Mainz",
+    "date": "1455-01-01",
+    "yearOnly": true,
+    "blurb": "The first major book printed using movable type in Europe.",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Gutenberg_Bible",
+    "era": "early-modern",
+    "fame": 2
+  },
+  {
+    "id": "columbus-arrives-bahamas",
+    "title": "Christopher Columbus's expedition makes landfall in the Bahamas",
+    "date": "1492-10-12",
+    "blurb": "The voyage opened sustained European contact with the Americas.",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Voyages_of_Christopher_Columbus",
+    "era": "early-modern",
+    "fame": 3
+  },
+  {
+    "id": "jamestown-founded",
+    "title": "Jamestown, the first permanent English settlement in North America, is founded",
+    "date": "1607-05-14",
+    "blurb": "Settlers of the Virginia Company established the colony along the James River.",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Jamestown,_Virginia",
+    "era": "early-modern",
+    "fame": 2
+  },
+  {
+    "id": "newton-principia-published",
+    "title": "Isaac Newton publishes Philosophiæ Naturalis Principia Mathematica",
+    "date": "1687-07-05",
+    "blurb": "The work laid out classical mechanics and the law of universal gravitation.",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Philosophi%C3%A6_Naturalis_Principia_Mathematica",
+    "era": "early-modern",
+    "fame": 2
+  },
+  {
+    "id": "lisbon-earthquake",
+    "title": "A massive earthquake and tsunami devastate Lisbon",
+    "date": "1755-11-01",
+    "blurb": "The disaster killed tens of thousands and shaped Enlightenment thinking.",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/1755_Lisbon_earthquake",
+    "era": "early-modern",
+    "fame": 1
+  },
+  {
+    "id": "spinning-jenny-invented",
+    "title": "James Hargreaves invents the spinning jenny",
+    "date": "1764-01-01",
+    "yearOnly": true,
+    "blurb": "The multi-spool spinning frame was a key early invention of the Industrial Revolution.",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Spinning_jenny",
+    "era": "early-modern",
+    "fame": 1
+  },
+  {
+    "id": "us-declaration-of-independence",
+    "title": "The Continental Congress adopts the Declaration of Independence",
+    "date": "1776-07-04",
+    "blurb": "Thirteen American colonies declared themselves independent of Great Britain.",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/United_States_Declaration_of_Independence",
+    "era": "early-modern",
+    "fame": 3
+  },
+  {
+    "id": "french-revolution-bastille",
+    "title": "The Bastille is stormed in Paris, igniting the French Revolution",
+    "date": "1789-07-14",
+    "blurb": "Parisians attacked the medieval fortress in search of arms and political prisoners.",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Storming_of_the_Bastille",
+    "era": "early-modern",
+    "fame": 3
+  },
+  {
+    "id": "napoleon-defeated-waterloo",
+    "title": "Napoleon is defeated at the Battle of Waterloo",
+    "date": "1815-06-18",
+    "blurb": "Coalition forces under Wellington and Blücher ended Napoleonic rule of France.",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Battle_of_Waterloo",
+    "era": "19c",
+    "fame": 3
+  },
+  {
+    "id": "erie-canal-opens",
+    "title": "The Erie Canal opens, linking the Great Lakes to the Atlantic",
+    "date": "1825-10-26",
+    "blurb": "The canal transformed New York into the principal commercial port of the U.S.",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Erie_Canal",
+    "era": "19c",
+    "fame": 1
+  },
+  {
+    "id": "indian-rebellion-1857",
+    "title": "The Indian Rebellion against the British East India Company begins",
+    "date": "1857-05-10",
+    "blurb": "The uprising at Meerut led the Crown to take direct control of India.",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Indian_Rebellion_of_1857",
+    "era": "19c",
+    "fame": 1
+  },
+  {
+    "id": "darwin-origin-of-species",
+    "title": "Charles Darwin publishes On the Origin of Species",
+    "date": "1859-11-24",
+    "blurb": "The book introduced the theory of evolution by natural selection to a wide public.",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/On_the_Origin_of_Species",
+    "era": "19c",
+    "fame": 2
+  },
+  {
+    "id": "emancipation-proclamation",
+    "title": "Abraham Lincoln issues the Emancipation Proclamation",
+    "date": "1863-01-01",
+    "blurb": "The proclamation declared enslaved people in Confederate states to be free.",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Emancipation_Proclamation",
+    "era": "19c",
+    "fame": 2
+  },
+  {
+    "id": "transcontinental-railroad-completed",
+    "title": "The First Transcontinental Railroad is completed at Promontory Summit",
+    "date": "1869-05-10",
+    "blurb": "Railroad workers drove the golden spike linking the Atlantic and Pacific by rail.",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/First_transcontinental_railroad",
+    "era": "19c",
+    "fame": 2
+  },
+  {
+    "id": "bell-patents-telephone",
+    "title": "Alexander Graham Bell is granted a patent for the telephone",
+    "date": "1876-03-07",
+    "blurb": "The patent kicked off rapid commercial deployment of telephone networks.",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Invention_of_the_telephone",
+    "era": "19c",
+    "fame": 2
+  },
+  {
+    "id": "edison-incandescent-lamp",
+    "title": "Thomas Edison demonstrates a long-lasting incandescent light bulb",
+    "date": "1879-10-22",
+    "blurb": "The carbon-filament lamp burned for over 13 hours in his Menlo Park lab.",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Incandescent_light_bulb",
+    "era": "19c",
+    "fame": 1
+  },
+  {
+    "id": "statue-of-liberty-dedicated",
+    "title": "The Statue of Liberty is dedicated in New York Harbor",
+    "date": "1886-10-28",
+    "blurb": "A gift from France, the statue became an icon of immigration to the United States.",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Statue_of_Liberty",
+    "era": "19c",
+    "fame": 2
+  },
+  {
+    "id": "wright-brothers-first-flight",
+    "title": "The Wright brothers achieve the first powered, controlled airplane flight",
+    "date": "1903-12-17",
+    "blurb": "Orville flew the Wright Flyer 120 feet at Kitty Hawk, North Carolina.",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Wright_Flyer",
+    "era": "20c",
+    "fame": 3
+  },
+  {
+    "id": "titanic-sinks",
+    "title": "The RMS Titanic strikes an iceberg and sinks in the North Atlantic",
+    "date": "1912-04-15",
+    "blurb": "More than 1,500 people died on the ship's maiden voyage.",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Sinking_of_the_Titanic",
+    "era": "20c",
+    "fame": 3
+  },
+  {
+    "id": "archduke-ferdinand-assassinated",
+    "title": "Archduke Franz Ferdinand of Austria is assassinated in Sarajevo",
+    "date": "1914-06-28",
+    "blurb": "The killing triggered the chain of events that led to World War I.",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Assassination_of_Archduke_Franz_Ferdinand",
+    "era": "20c",
+    "fame": 2
+  },
+  {
+    "id": "penicillin-discovered",
+    "title": "Alexander Fleming discovers penicillin",
+    "date": "1928-09-28",
+    "blurb": "The accidental discovery launched the era of antibiotic medicine.",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Penicillin",
+    "era": "20c",
+    "fame": 2
+  },
+  {
+    "id": "pearl-harbor-attack",
+    "title": "Japan attacks the U.S. naval base at Pearl Harbor",
+    "date": "1941-12-07",
+    "blurb": "The surprise attack brought the United States into World War II.",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Attack_on_Pearl_Harbor",
+    "era": "20c",
+    "fame": 3
+  },
+  {
+    "id": "d-day-normandy-landings",
+    "title": "Allied forces land in Normandy on D-Day",
+    "date": "1944-06-06",
+    "blurb": "The largest seaborne invasion in history opened the Western Front in WWII.",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Normandy_landings",
+    "era": "20c",
+    "fame": 3
+  },
+  {
+    "id": "xerox-914-introduced",
+    "title": "Xerox introduces the 914, the first successful plain-paper photocopier",
+    "date": "1959-09-16",
+    "blurb": "The machine made document copying cheap and ubiquitous in offices.",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Xerox_914",
+    "era": "20c",
+    "fame": 1
+  },
+  {
+    "id": "apollo-11-moon-landing",
+    "title": "Apollo 11 astronauts land on the Moon",
+    "date": "1969-07-20",
+    "blurb": "Neil Armstrong and Buzz Aldrin became the first humans to walk on the lunar surface.",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Apollo_11",
+    "era": "20c",
+    "fame": 3
+  },
+  {
+    "id": "chernobyl-disaster",
+    "title": "Reactor No. 4 at the Chernobyl nuclear plant explodes",
+    "date": "1986-04-26",
+    "blurb": "The accident released radioactive contamination across much of Europe.",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Chernobyl_disaster",
+    "era": "20c",
+    "fame": 2
+  },
+  {
+    "id": "world-wide-web-proposal",
+    "title": "Tim Berners-Lee circulates his proposal for the World Wide Web at CERN",
+    "date": "1989-03-12",
+    "blurb": "The memo \"Information Management: A Proposal\" outlined what became the web.",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/History_of_the_World_Wide_Web",
+    "era": "20c",
+    "fame": 1
+  },
+  {
+    "id": "berlin-wall-falls",
+    "title": "The Berlin Wall is opened, ending decades of division",
+    "date": "1989-11-09",
+    "blurb": "East Germany's announcement of free travel led crowds to dismantle the wall overnight.",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/Fall_of_the_Berlin_Wall",
+    "era": "20c",
+    "fame": 3
+  },
+  {
+    "id": "september-11-attacks",
+    "title": "Coordinated terrorist attacks strike the World Trade Center and the Pentagon",
+    "date": "2001-09-11",
+    "blurb": "Nearly 3,000 people died and the attacks reshaped global security policy.",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/September_11_attacks",
+    "era": "21c",
+    "fame": 3
+  },
+  {
+    "id": "iphone-introduced",
+    "title": "Steve Jobs unveils the first iPhone at Macworld",
+    "date": "2007-01-09",
+    "blurb": "The device combined a phone, iPod, and internet communicator into one product.",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/IPhone_(1st_generation)",
+    "era": "21c",
+    "fame": 2
+  },
+  {
+    "id": "obama-elected-president",
+    "title": "Barack Obama is elected the 44th President of the United States",
+    "date": "2008-11-04",
+    "blurb": "Obama became the first Black president in U.S. history.",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/2008_United_States_presidential_election",
+    "era": "21c",
+    "fame": 2
+  },
+  {
+    "id": "covid-19-pandemic-declared",
+    "title": "The World Health Organization declares COVID-19 a pandemic",
+    "date": "2020-03-11",
+    "blurb": "The declaration came as cases spread across more than 100 countries.",
+    "wikipediaUrl": "https://en.wikipedia.org/wiki/COVID-19_pandemic",
+    "era": "21c",
+    "fame": 3
+  }
+]
