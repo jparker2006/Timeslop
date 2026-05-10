@@ -8,6 +8,7 @@ export const runtime = "nodejs";
 
 const Body = z.object({
   excludeIds: z.array(z.string()).optional(),
+  difficulty: z.enum(["easy", "hard"]).optional(),
 });
 
 export async function POST(req: Request) {
@@ -23,11 +24,12 @@ export async function POST(req: Request) {
   }
 
   const excludeIds = new Set(parsed.data.excludeIds ?? []);
+  const difficulty = parsed.data.difficulty ?? "easy";
   const [pool, recent] = await Promise.all([
     loadHistoricalPool(),
     loadRecentPool(),
   ]);
-  const puzzle = composePuzzle(pool, recent, excludeIds);
+  const puzzle = composePuzzle(pool, recent, excludeIds, difficulty);
 
   return NextResponse.json(puzzle, {
     headers: { "Cache-Control": "no-store" },

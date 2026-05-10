@@ -30,15 +30,15 @@ export function EventCard({ title, kind, date, yearOnly, state = "neutral", comp
   void kind;
   return (
     <div
-      className={`rounded-lg border-2 px-4 ${compact ? "py-3" : "py-4"} shadow-sm select-none transition-colors duration-300 ${border}`}
+      className={`rounded-lg border-2 px-4 ${compact ? "py-3" : "py-5"} shadow-sm select-none transition-colors duration-300 ${border}`}
     >
       <div className="flex items-start gap-3">
         {yearLabel && (
-          <span className="shrink-0 text-base font-semibold tabular-nums text-zinc-700 dark:text-zinc-300 mt-0.5">
+          <span className="shrink-0 text-lg font-semibold tabular-nums text-zinc-700 dark:text-zinc-300 mt-0.5">
             {yearLabel.match(/(AD\s+)?\d+$/)?.[0] ?? yearLabel}
           </span>
         )}
-        <span className={`flex-1 text-lg leading-snug ${yearLabel ? "" : "text-center"}`}>{title}</span>
+        <span className={`flex-1 text-xl leading-snug ${yearLabel ? "" : "text-center"}`}>{title}</span>
       </div>
     </div>
   );

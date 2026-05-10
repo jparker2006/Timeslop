@@ -9,8 +9,11 @@ export const HistoricalEventSchema = z.object({
   wikipediaUrl: z.string().url(),
   era: z.enum(["ancient", "medieval", "early-modern", "19c", "20c", "21c"]),
   fame: z.union([z.literal(1), z.literal(2), z.literal(3)]).optional(),
+  selected: z.boolean().optional(),
 });
 export type HistoricalEvent = z.infer<typeof HistoricalEventSchema>;
+
+export type Difficulty = "easy" | "hard";
 
 export const HeadlineSchema = z.object({
   id: z.string(),

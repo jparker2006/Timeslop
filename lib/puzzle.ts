@@ -1,10 +1,32 @@
-import type { Headline, HistoricalEvent, PuzzlePayload, RevealedSlot } from "./types";
+import type {
+  Difficulty,
+  Headline,
+  HistoricalEvent,
+  PuzzlePayload,
+  RevealedSlot,
+} from "./types";
 import { maskDates } from "./mask";
 
 export const HISTORICAL_PER_PUZZLE = 8;
 export const TOTAL_SLOTS = HISTORICAL_PER_PUZZLE + 1;
 const MIN_DISTINCT_ERAS = 3;
 const SHUFFLE_RETRIES = 30;
+
+// Easy: only editor-curated "selected" events from OnThisDay.
+// Hard: everything in the pool, including the broader/niche events.
+const DIFFICULTY_FILTERS: Record<Difficulty, (e: HistoricalEvent) => boolean> = {
+  easy: (e) => e.selected === true,
+  hard: () => true,
+};
+
+function filterByDifficulty(
+  pool: HistoricalEvent[],
+  difficulty: Difficulty,
+): HistoricalEvent[] {
+  const fn = DIFFICULTY_FILTERS[difficulty];
+  const filtered = pool.filter(fn);
+  return filtered.length >= HISTORICAL_PER_PUZZLE ? filtered : pool;
+}
 
 function shuffle<T>(arr: T[]): T[] {
   const out = arr.slice();
@@ -70,8 +92,10 @@ export function composePuzzle(
   pool: HistoricalEvent[],
   recentPool: Headline[],
   excludeIds: Set<string> = new Set(),
+  difficulty: Difficulty = "easy",
 ): PuzzlePayload {
-  const usableHistorical = applyExcludes(pool, excludeIds, HISTORICAL_PER_PUZZLE);
+  const filteredPool = filterByDifficulty(pool, difficulty);
+  const usableHistorical = applyExcludes(filteredPool, excludeIds, HISTORICAL_PER_PUZZLE);
   const picked = pickHistorical(usableHistorical);
   const usedYears = new Set(picked.map((e) => yearOf(e.date)));
 

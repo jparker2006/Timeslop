@@ -1,13 +1,13 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import type { HistoricalEvent } from "./types";
-import { fetchEventsForDate } from "./onThisDay";
+import { fetchOnThisDay } from "./onThisDay";
 import { SEED_EVENTS } from "./seedEvents";
 
 const CACHE_DIR = process.env.VERCEL
   ? "/tmp/timeslop-cache"
   : path.join(process.cwd(), ".timeslop-cache");
-const CACHE_FILE = path.join(CACHE_DIR, "events.json");
+const CACHE_FILE = path.join(CACHE_DIR, "events-v3.json");
 const CACHE_TTL_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
 const SAMPLE_DATES = 30;
 const MIN_POOL_SIZE = 100;
@@ -51,22 +51,49 @@ function randomCalendarDates(n: number): Array<[number, number]> {
   return out;
 }
 
-async function fetchPoolFromOnThisDay(): Promise<HistoricalEvent[]> {
+async function fetchFromOnThisDay(): Promise<HistoricalEvent[]> {
   const dates = randomCalendarDates(SAMPLE_DATES);
-  const results = await Promise.allSettled(
-    dates.map(([m, d]) => fetchEventsForDate(m, d)),
-  );
-  const collected: HistoricalEvent[] = [];
+  const tasks: Array<Promise<HistoricalEvent[]>> = [];
+  for (const [m, d] of dates) {
+    tasks.push(fetchOnThisDay("selected", m, d));
+    tasks.push(fetchOnThisDay("events", m, d));
+  }
+  const results = await Promise.allSettled(tasks);
+
   let failures = 0;
-  for (const r of results) {
-    if (r.status === "fulfilled") collected.push(...r.value);
-    else failures += 1;
-  }
+  let selectedCount = 0;
   const dedup = new Map<string, HistoricalEvent>();
-  for (const e of collected) dedup.set(e.id, e);
-  if (failures > 0) {
-    console.warn(`[eventsCache] ${failures}/${dates.length} OnThisDay calls failed`);
+  // Process selected first so the `selected: true` flag wins on duplicates.
+  for (let i = 0; i < results.length; i += 2) {
+    const r = results[i];
+    if (r.status === "fulfilled") {
+      for (const e of r.value) {
+        if (!dedup.has(e.id)) {
+          dedup.set(e.id, e);
+          selectedCount += 1;
+        }
+      }
+    } else {
+      failures += 1;
+    }
   }
+  for (let i = 1; i < results.length; i += 2) {
+    const r = results[i];
+    if (r.status === "fulfilled") {
+      for (const e of r.value) {
+        if (!dedup.has(e.id)) dedup.set(e.id, e);
+      }
+    } else {
+      failures += 1;
+    }
+  }
+
+  if (failures > 0) {
+    console.warn(`[eventsCache] ${failures}/${tasks.length} OnThisDay calls failed`);
+  }
+  console.log(
+    `[eventsCache] ${dedup.size} unique events (${selectedCount} curated/selected)`,
+  );
   return Array.from(dedup.values());
 }
 
@@ -77,9 +104,8 @@ async function hydrate(): Promise<HistoricalEvent[]> {
     return disk;
   }
   try {
-    const fresh = await fetchPoolFromOnThisDay();
+    const fresh = await fetchFromOnThisDay();
     if (fresh.length >= MIN_POOL_SIZE) {
-      console.log(`[eventsCache] fetched ${fresh.length} events from OnThisDay`);
       await writeDiskCache(fresh);
       return fresh;
     }

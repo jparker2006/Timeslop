@@ -1,8 +1,10 @@
 import type { HistoricalEvent } from "./types";
 import { yearToEra } from "./era";
 
-const BASE = "https://api.wikimedia.org/feed/v1/wikipedia/en/onthisday/events";
-const UA = "Timeslop/1.0 (https://github.com/jakeparker/timeslop; contact via repo)";
+const BASE = "https://api.wikimedia.org/feed/v1/wikipedia/en/onthisday";
+const UA = "Timeslop/1.0 (https://github.com/jparker2006/Timeslop)";
+
+export type OnThisDayKind = "events" | "selected";
 
 type RawPage = {
   title?: string;
@@ -18,6 +20,7 @@ type RawEvent = {
 
 type RawResponse = {
   events?: RawEvent[];
+  selected?: RawEvent[];
 };
 
 function slug(s: string): string {
@@ -34,31 +37,50 @@ function clip(s: string, max: number): string {
   return `${cut}…`;
 }
 
-export async function fetchEventsForDate(
+// OnThisDay returns multiple linked pages per event. The first page is often a
+// broad topic (e.g. "World War II") while later pages are the specific subject.
+// Find the most specific page — one whose title isn't acting as a topic prefix.
+function pickPageForEvent(pages: RawPage[], eventText: string): RawPage | null {
+  if (pages.length === 0) return null;
+  const lowerText = eventText.toLowerCase().trim();
+  for (const p of pages) {
+    const t = (p.title ?? "").toLowerCase().replace(/_/g, " ").trim();
+    if (!t) continue;
+    const isPrefix =
+      lowerText.startsWith(`${t}:`) ||
+      lowerText.startsWith(`${t} -`) ||
+      lowerText.startsWith(`${t},`);
+    if (!isPrefix) return p;
+  }
+  return pages[0];
+}
+
+export async function fetchOnThisDay(
+  kind: OnThisDayKind,
   month: number,
   day: number,
 ): Promise<HistoricalEvent[]> {
   const mm = String(month).padStart(2, "0");
   const dd = String(day).padStart(2, "0");
-  const res = await fetch(`${BASE}/${mm}/${dd}`, {
+  const res = await fetch(`${BASE}/${kind}/${mm}/${dd}`, {
     headers: { "User-Agent": UA, Accept: "application/json" },
     cache: "no-store",
   });
   if (!res.ok) {
-    throw new Error(`onthisday ${mm}/${dd} returned ${res.status}`);
+    throw new Error(`onthisday ${kind} ${mm}/${dd} returned ${res.status}`);
   }
   const data = (await res.json()) as RawResponse;
-  const events = data.events ?? [];
+  const raw = (kind === "selected" ? data.selected : data.events) ?? [];
   const currentYear = new Date().getFullYear();
   const out: HistoricalEvent[] = [];
 
-  for (const e of events) {
+  for (const e of raw) {
     if (typeof e.year !== "number" || !Number.isFinite(e.year)) continue;
     if (e.year < 1 || e.year > currentYear) continue;
     if (!e.text || e.text.trim().length < 8) continue;
-    const page = e.pages?.[0];
+    const page = pickPageForEvent(e.pages ?? [], e.text);
     const wiki = page?.content_urls?.desktop?.page;
-    if (!wiki) continue;
+    if (!page || !wiki) continue;
 
     const yyyy = String(e.year).padStart(4, "0");
     const date = `${yyyy}-${mm}-${dd}`;
@@ -75,6 +97,7 @@ export async function fetchEventsForDate(
       blurb,
       wikipediaUrl: wiki,
       era: yearToEra(e.year),
+      selected: kind === "selected",
     });
   }
 

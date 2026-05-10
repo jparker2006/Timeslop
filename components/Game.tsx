@@ -17,8 +17,9 @@ import {
 } from "@dnd-kit/core";
 import { EventCard } from "./EventCard";
 import { ResultModal } from "./ResultModal";
+import { Rules, RULES_SEEN_KEY } from "./Rules";
 import { SessionStats, type Stats } from "./SessionStats";
-import type { PuzzlePayload, RevealedSlot } from "@/lib/types";
+import type { Difficulty, PuzzlePayload, RevealedSlot } from "@/lib/types";
 import type { SlotShareState } from "@/lib/scoring";
 
 type Props = { initialPuzzle: PuzzlePayload };
@@ -80,6 +81,7 @@ export function Game({ initialPuzzle }: Props) {
     currentPerfectRun: 0,
     bestPerfectRun: 0,
   });
+  const [difficulty, setDifficulty] = useState<Difficulty>("easy");
 
   const slotsById = useMemo(() => {
     const m = new Map<string, RevealedSlot>();
@@ -103,7 +105,16 @@ export function Game({ initialPuzzle }: Props) {
   const [activeDragId, setActiveDragId] = useState<string | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [loadingNext, setLoadingNext] = useState(false);
+  const [showRules, setShowRules] = useState(false);
   const completionRecorded = useRef<string | null>(null);
+
+  useEffect(() => {
+    try {
+      if (!localStorage.getItem(RULES_SEEN_KEY)) {
+        setShowRules(true);
+      }
+    } catch {}
+  }, []);
 
   const sensors = useSensors(
     useSensor(MouseSensor, { activationConstraint: { distance: 5 } }),
@@ -204,7 +215,7 @@ export function Game({ initialPuzzle }: Props) {
     setPhase("pending");
   }
 
-  async function playAgain() {
+  async function loadPuzzle(forDifficulty: Difficulty) {
     if (loadingNext) return;
     setLoadingNext(true);
     setModalOpen(false);
@@ -212,7 +223,10 @@ export function Game({ initialPuzzle }: Props) {
       const res = await fetch("/api/puzzle/new", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ excludeIds: Array.from(sessionUsedIds) }),
+        body: JSON.stringify({
+          excludeIds: Array.from(sessionUsedIds),
+          difficulty: forDifficulty,
+        }),
       });
       if (!res.ok) throw new Error(`status ${res.status}`);
       const next: PuzzlePayload = await res.json();
@@ -237,12 +251,24 @@ export function Game({ initialPuzzle }: Props) {
       setResults([]);
       setActiveDragId(null);
     } catch (err) {
-      console.error("play again failed", err);
+      console.error("load puzzle failed", err);
       setModalOpen(true);
     } finally {
       setLoadingNext(false);
     }
   }
+
+  async function playAgain() {
+    await loadPuzzle(difficulty);
+  }
+
+  async function changeDifficulty(d: Difficulty) {
+    if (d === difficulty || loadingNext) return;
+    setDifficulty(d);
+    await loadPuzzle(d);
+  }
+
+  const canChangeDifficulty = nextIdx === 1 && phase === "ready";
 
   const totalRounds = order.length - 1;
   const score = results.filter((r) => r === "correct").length;
@@ -274,13 +300,42 @@ export function Game({ initialPuzzle }: Props) {
 
   return (
     <div className="mx-auto w-full max-w-md px-4 pt-4 pb-12">
-      <header className="mb-4 flex items-center justify-between">
+      <header className="mb-3 flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-semibold tracking-tight">Timeslop</h1>
-          <p className="text-base text-zinc-500">order events on a timeline</p>
+          <h1 className="text-4xl font-semibold tracking-tight">Timeslop</h1>
+          <p className="text-lg text-zinc-500">order events on a timeline</p>
         </div>
-        <SessionStats stats={stats} />
+        <div className="flex items-center gap-3">
+          <SessionStats stats={stats} />
+          <button
+            onClick={() => setShowRules(true)}
+            aria-label="how to play"
+            className="flex h-10 w-10 items-center justify-center rounded-full border border-zinc-300 dark:border-zinc-700 text-lg font-semibold text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+          >
+            ?
+          </button>
+        </div>
       </header>
+
+      {canChangeDifficulty && (
+        <div className="mb-5 grid grid-cols-2 gap-1.5 rounded-lg border border-zinc-300 dark:border-zinc-700 p-1">
+          {(["easy", "hard"] as const).map((d) => (
+            <button
+              key={d}
+              onClick={() => changeDifficulty(d)}
+              disabled={loadingNext}
+              className={`rounded-md py-3 text-lg font-medium capitalize transition-colors disabled:opacity-50 ${
+                difficulty === d
+                  ? "bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900"
+                  : "text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800"
+              }`}
+              aria-pressed={difficulty === d}
+            >
+              {d}
+            </button>
+          ))}
+        </div>
+      )}
 
       <DndContext
         id="timeslop-board"
@@ -291,7 +346,7 @@ export function Game({ initialPuzzle }: Props) {
         onDragCancel={() => setActiveDragId(null)}
       >
         <section className="sticky top-0 z-10 -mx-4 px-4 pb-3 pt-2 bg-zinc-50/95 dark:bg-black/95 backdrop-blur">
-          <div className="text-sm uppercase tracking-wide text-zinc-500 mb-2">
+          <div className="text-base uppercase tracking-wide text-zinc-500 mb-2">
             Round {roundLabel}
             {phase === "ready" && nextSlot ? " — place this event" : ""}
             {phase === "pending" ? " — drag to reposition or confirm" : ""}
@@ -307,7 +362,7 @@ export function Game({ initialPuzzle }: Props) {
                 opacity: feedbackFading ? 0 : 1,
                 transition: `opacity ${FEEDBACK_FADE_MS}ms ease-out`,
               }}
-              className={`rounded-lg border-2 px-4 py-4 text-center text-lg font-medium ${
+              className={`rounded-lg border-2 px-4 py-5 text-center text-xl font-medium ${
                 feedbackKind === "correct"
                   ? "border-emerald-500 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300"
                   : "border-rose-400 bg-rose-50 dark:bg-rose-950/40 text-rose-700 dark:text-rose-300"
@@ -319,13 +374,13 @@ export function Game({ initialPuzzle }: Props) {
             </div>
           )}
           {phase === "done" && (
-            <div className="rounded-lg border-2 border-zinc-300 dark:border-zinc-700 px-4 py-4 text-center text-lg">
+            <div className="rounded-lg border-2 border-zinc-300 dark:border-zinc-700 px-4 py-5 text-center text-xl">
               Done — {score}/{totalRounds} correct
             </div>
           )}
         </section>
 
-        <p className="mt-4 mb-2 text-base text-zinc-500">Timeline · oldest at top</p>
+        <p className="mt-4 mb-2 text-lg text-zinc-500">Timeline · oldest at top</p>
 
         <ol>
           <Gap key="gap-leading" id="gap-0" active={gapActive("gap-0")} />
@@ -350,7 +405,7 @@ export function Game({ initialPuzzle }: Props) {
                       <DraggableSlot slot={slot} state="pending" />
                       <button
                         onClick={confirmPlacement}
-                        className="mt-2 w-full rounded-lg bg-zinc-900 dark:bg-zinc-100 dark:text-zinc-900 text-white py-3.5 text-lg font-medium hover:opacity-90"
+                        className="mt-2 w-full rounded-lg bg-zinc-900 dark:bg-zinc-100 dark:text-zinc-900 text-white py-4 text-xl font-medium hover:opacity-90"
                       >
                         Confirm placement
                       </button>
@@ -388,14 +443,14 @@ export function Game({ initialPuzzle }: Props) {
         <div className="mt-6 flex items-center justify-center gap-2">
           <button
             onClick={() => setModalOpen(true)}
-            className="rounded-lg border border-zinc-300 dark:border-zinc-700 px-5 py-3.5 text-lg font-medium hover:bg-zinc-50 dark:hover:bg-zinc-800"
+            className="rounded-lg border border-zinc-300 dark:border-zinc-700 px-5 py-4 text-xl font-medium hover:bg-zinc-50 dark:hover:bg-zinc-800"
           >
             View result
           </button>
           <button
             onClick={playAgain}
             disabled={loadingNext}
-            className="rounded-lg bg-zinc-900 dark:bg-zinc-100 dark:text-zinc-900 text-white px-6 py-3.5 text-lg font-medium disabled:opacity-50"
+            className="rounded-lg bg-zinc-900 dark:bg-zinc-100 dark:text-zinc-900 text-white px-6 py-4 text-xl font-medium disabled:opacity-50"
           >
             {loadingNext ? "Loading…" : "Play again"}
           </button>
@@ -413,6 +468,8 @@ export function Game({ initialPuzzle }: Props) {
           loadingNext={loadingNext}
         />
       )}
+
+      {showRules && <Rules onDismiss={() => setShowRules(false)} />}
     </div>
   );
 }
