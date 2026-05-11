@@ -4,7 +4,6 @@ import { useState } from "react";
 import { buildShareGrid, type SlotShareState } from "@/lib/scoring";
 
 type Props = {
-  puzzleId: string;
   slotStates: SlotShareState[];
   score: number;
   total: number;
@@ -14,7 +13,6 @@ type Props = {
 };
 
 export function ResultModal({
-  puzzleId,
   slotStates,
   score,
   total,
@@ -23,7 +21,7 @@ export function ResultModal({
   loadingNext,
 }: Props) {
   const [copied, setCopied] = useState(false);
-  const grid = buildShareGrid(slotStates, puzzleId.slice(0, 8));
+  const grid = buildShareGrid(slotStates);
   const isPerfect = score === total;
 
   async function share() {
@@ -52,7 +50,7 @@ export function ResultModal({
           </button>
         </div>
 
-        <div className="mt-5 rounded-lg bg-zinc-100 dark:bg-zinc-800 p-4 text-center text-4xl tracking-widest font-mono">
+        <div className="mt-5 rounded-lg bg-zinc-100 dark:bg-zinc-800 p-4 text-center text-2xl tracking-widest font-mono whitespace-nowrap overflow-x-auto">
           {slotStates.map((s) => (s === "correct" ? "🟩" : "⬜")).join("")}
         </div>
 
