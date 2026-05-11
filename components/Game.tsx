@@ -459,7 +459,6 @@ export function Game({ initialPuzzle }: Props) {
 
       {modalOpen && phase === "done" && (
         <ResultModal
-          puzzleId={puzzle.puzzleId}
           slotStates={results}
           score={score}
           total={totalRounds}
