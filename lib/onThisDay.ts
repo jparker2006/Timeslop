@@ -37,6 +37,14 @@ function clip(s: string, max: number): string {
   return `${cut}…`;
 }
 
+function stripPictured(s: string): string {
+  return s
+    .replace(/\s*\([^()]*\bpictured\b[^()]*\)/gi, "")
+    .replace(/\s{2,}/g, " ")
+    .replace(/\s+([,.;:!?])/g, "$1")
+    .trim();
+}
+
 // OnThisDay returns multiple linked pages per event. The first page is often a
 // broad topic (e.g. "World War II") while later pages are the specific subject.
 // Find the most specific page — one whose title isn't acting as a topic prefix.
@@ -84,9 +92,9 @@ export async function fetchOnThisDay(
 
     const yyyy = String(e.year).padStart(4, "0");
     const date = `${yyyy}-${mm}-${dd}`;
-    const titleSource = e.text.trim();
+    const titleSource = stripPictured(e.text.trim());
     const title = clip(titleSource, 140);
-    const blurb = clip((page.extract ?? titleSource).trim(), 220);
+    const blurb = clip(stripPictured((page.extract ?? titleSource).trim()), 220);
     const id = `otd-${e.year}-${slug(titleSource)}`;
 
     out.push({
