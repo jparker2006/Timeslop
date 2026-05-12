@@ -7,7 +7,7 @@ import { SEED_EVENTS } from "./seedEvents";
 const CACHE_DIR = process.env.VERCEL
   ? "/tmp/timeslop-cache"
   : path.join(process.cwd(), ".timeslop-cache");
-const CACHE_FILE = path.join(CACHE_DIR, "events-v3.json");
+const CACHE_FILE = path.join(CACHE_DIR, "events-v4.json");
 const CACHE_TTL_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
 const SAMPLE_DATES = 30;
 const MIN_POOL_SIZE = 100;
