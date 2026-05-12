@@ -19,16 +19,18 @@ import { EventCard } from "./EventCard";
 import { ResultModal } from "./ResultModal";
 import { Rules, RULES_SEEN_KEY } from "./Rules";
 import { SessionStats, type Stats } from "./SessionStats";
+import { formatEventDate } from "@/lib/format";
 import type { Difficulty, PuzzlePayload, RevealedSlot } from "@/lib/types";
 import type { SlotShareState } from "@/lib/scoring";
 
 type Props = { initialPuzzle: PuzzlePayload };
-type Phase = "ready" | "pending" | "feedback" | "done";
+type Phase = "ready" | "pending" | "revealing" | "feedback" | "done";
 type CardState = "neutral" | "correct" | "wrong" | "reveal" | "pending";
 
 const FEEDBACK_HOLD_MS = 1500;
 const FEEDBACK_FADE_MS = 400;
 const FEEDBACK_TOTAL_MS = FEEDBACK_HOLD_MS + FEEDBACK_FADE_MS;
+const FLIP_REVEAL_MS = 2200;
 
 function correctIndex(date: string, placedDates: string[]): number {
   for (let i = 0; i < placedDates.length; i++) {
@@ -111,6 +113,35 @@ function DraggableSlot({
   );
 }
 
+function FlipRevealCard({ slot, onDone }: { slot: RevealedSlot; onDone: () => void }) {
+  const yearLabel = formatEventDate(slot.date, slot.yearOnly ?? false);
+  const year = yearLabel.match(/(AD\s+)?\d+$/)?.[0] ?? yearLabel;
+  const onDoneRef = useRef(onDone);
+  onDoneRef.current = onDone;
+
+  useEffect(() => {
+    const id = setTimeout(() => onDoneRef.current(), FLIP_REVEAL_MS);
+    return () => clearTimeout(id);
+  }, []);
+
+  return (
+    <div style={{ perspective: 1200 }}>
+      <div className="relative timeslop-flip-reveal">
+        <div className="timeslop-flip-face">
+          <EventCard title={slot.title} kind={slot.kind} state="pending" />
+        </div>
+        <div
+          className="timeslop-flip-face timeslop-flip-back absolute inset-0 flex items-center justify-center rounded-lg border-2 border-blue-500 bg-blue-50 dark:bg-blue-950/40"
+        >
+          <span className="text-6xl font-bold tabular-nums text-blue-700 dark:text-blue-200">
+            {year}
+          </span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export function Game({ initialPuzzle }: Props) {
   const [puzzle, setPuzzle] = useState<PuzzlePayload>(initialPuzzle);
   const [sessionUsedIds, setSessionUsedIds] = useState<Set<string>>(
@@ -168,6 +199,11 @@ export function Game({ initialPuzzle }: Props) {
 
   function confirmPlacement() {
     if (phase !== "pending" || pendingIndex === null || !nextSlot) return;
+    setPhase("revealing");
+  }
+
+  function commitPlacement() {
+    if (pendingIndex === null || !nextSlot) return;
     const userIndex = pendingIndex;
     const placedDates = placed.map((p) => p.date);
     const correct = correctIndex(nextSlot.date, placedDates);
@@ -335,11 +371,13 @@ export function Game({ initialPuzzle }: Props) {
 
   type Row =
     | { kind: "placed"; slot: RevealedSlot }
-    | { kind: "pending"; slot: RevealedSlot };
+    | { kind: "pending"; slot: RevealedSlot }
+    | { kind: "revealing"; slot: RevealedSlot };
   const rows: Row[] = (() => {
     const base: Row[] = placed.map((s) => ({ kind: "placed" as const, slot: s }));
-    if (phase === "pending" && pendingIndex !== null && nextSlot) {
-      base.splice(pendingIndex, 0, { kind: "pending", slot: nextSlot });
+    if ((phase === "pending" || phase === "revealing") && pendingIndex !== null && nextSlot) {
+      const kind = phase === "revealing" ? "revealing" : "pending";
+      base.splice(pendingIndex, 0, { kind, slot: nextSlot });
     }
     return base;
   })();
@@ -456,6 +494,8 @@ export function Game({ initialPuzzle }: Props) {
                         Confirm placement
                       </button>
                     </div>
+                  ) : row.kind === "revealing" ? (
+                    <FlipRevealCard slot={slot} onDone={commitPlacement} />
                   ) : (
                     <EventCard
                       title={slot.title}
