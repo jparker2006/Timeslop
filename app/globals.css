@@ -40,6 +40,27 @@ body {
   animation: timeslop-card-enter 350ms ease-out;
 }
 
+@keyframes timeslop-flip-reveal {
+  0%   { transform: rotateY(0deg); }
+  22%  { transform: rotateY(180deg); }
+  78%  { transform: rotateY(180deg); }
+  100% { transform: rotateY(360deg); }
+}
+
+.timeslop-flip-reveal {
+  transform-style: preserve-3d;
+  animation: timeslop-flip-reveal 2200ms ease-in-out forwards;
+}
+
+.timeslop-flip-face {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.timeslop-flip-back {
+  transform: rotateY(180deg);
+}
+
 /* ---------- Rules walkthrough animations ---------- */
 
 @keyframes rules-backdrop-in {
