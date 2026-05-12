@@ -37,6 +37,18 @@ function correctIndex(date: string, placedDates: string[]): number {
   return placedDates.length;
 }
 
+function pointerClientX(event: Event | null): number | null {
+  if (!event) return null;
+  if ("touches" in event) {
+    const t = (event as TouchEvent).touches[0] ?? (event as TouchEvent).changedTouches[0];
+    return t ? t.clientX : null;
+  }
+  if ("clientX" in event) {
+    return (event as MouseEvent).clientX;
+  }
+  return null;
+}
+
 function Gap({ id, active }: { id: string; active: boolean }) {
   const { isOver, setNodeRef } = useDroppable({ id, disabled: !active });
   return (
@@ -103,6 +115,7 @@ export function Game({ initialPuzzle }: Props) {
   const [wrongSlotIds, setWrongSlotIds] = useState<Set<string>>(new Set());
   const [results, setResults] = useState<SlotShareState[]>([]);
   const [activeDragId, setActiveDragId] = useState<string | null>(null);
+  const [dragTilt, setDragTilt] = useState<"left" | "right">("left");
   const [modalOpen, setModalOpen] = useState(false);
   const [loadingNext, setLoadingNext] = useState(false);
   const [showRules, setShowRules] = useState(false);
@@ -192,6 +205,11 @@ export function Game({ initialPuzzle }: Props) {
 
   function onDragStart(e: DragStartEvent) {
     setActiveDragId(String(e.active.id));
+    const rect = e.active.rect.current.initial;
+    const pointerX = pointerClientX(e.activatorEvent);
+    if (rect && pointerX !== null) {
+      setDragTilt(pointerX < rect.left + rect.width / 2 ? "left" : "right");
+    }
   }
 
   function onDragEnd(e: DragEndEvent) {
@@ -428,7 +446,11 @@ export function Game({ initialPuzzle }: Props) {
 
         <DragOverlay dropAnimation={null}>
           {activeDragId && nextSlot ? (
-            <div className="cursor-grabbing rotate-[-1deg] shadow-2xl">
+            <div
+              className={`cursor-grabbing shadow-2xl ${
+                dragTilt === "right" ? "rotate-[2deg]" : "rotate-[-2deg]"
+              }`}
+            >
               <EventCard
                 title={nextSlot.title}
                 kind={nextSlot.kind}
