@@ -40,7 +40,8 @@ function correctIndex(date: string, placedDates: string[]): number {
 function pointerClientX(event: Event | null): number | null {
   if (!event) return null;
   if ("touches" in event) {
-    const t = (event as TouchEvent).touches[0] ?? (event as TouchEvent).changedTouches[0];
+    const te = event as TouchEvent;
+    const t = te.touches[0] ?? te.changedTouches[0] ?? te.targetTouches[0];
     return t ? t.clientX : null;
   }
   if ("clientX" in event) {
@@ -68,13 +69,40 @@ function Gap({ id, active }: { id: string; active: boolean }) {
   );
 }
 
-function DraggableSlot({ slot, state }: { slot: RevealedSlot; state: CardState }) {
+function DraggableSlot({
+  slot,
+  state,
+  onTilt,
+}: {
+  slot: RevealedSlot;
+  state: CardState;
+  onTilt: (dir: "left" | "right") => void;
+}) {
   const { attributes, listeners, setNodeRef, isDragging } = useDraggable({ id: "next" });
+  const elRef = useRef<HTMLDivElement | null>(null);
+
+  function handlePointerDown(clientX: number) {
+    const el = elRef.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    if (rect.width <= 0) return;
+    onTilt(clientX < rect.left + rect.width / 2 ? "left" : "right");
+  }
+
   return (
     <div
-      ref={setNodeRef}
+      ref={(node) => {
+        elRef.current = node;
+        setNodeRef(node);
+      }}
       {...attributes}
       {...listeners}
+      onPointerDownCapture={(e) => handlePointerDown(e.clientX)}
+      onTouchStartCapture={(e) => {
+        const t = e.touches[0] ?? e.changedTouches[0];
+        if (t) handlePointerDown(t.clientX);
+      }}
+      onMouseDownCapture={(e) => handlePointerDown(e.clientX)}
       style={{ touchAction: "none", opacity: isDragging ? 0.35 : 1 }}
       className="cursor-grab active:cursor-grabbing"
     >
@@ -371,7 +399,7 @@ export function Game({ initialPuzzle }: Props) {
           </div>
           {phase === "ready" && nextSlot && (
             <div key={`next-${nextIdx}`} className="timeslop-card-enter">
-              <DraggableSlot slot={nextSlot} state="neutral" />
+              <DraggableSlot slot={nextSlot} state="neutral" onTilt={setDragTilt} />
             </div>
           )}
           {phase === "feedback" && feedbackKind && (
@@ -420,7 +448,7 @@ export function Game({ initialPuzzle }: Props) {
                 <li>
                   {row.kind === "pending" ? (
                     <div>
-                      <DraggableSlot slot={slot} state="pending" />
+                      <DraggableSlot slot={slot} state="pending" onTilt={setDragTilt} />
                       <button
                         onClick={confirmPlacement}
                         className="mt-2 w-full rounded-lg bg-zinc-900 dark:bg-zinc-100 dark:text-zinc-900 text-white py-4 text-xl font-medium hover:opacity-90"
@@ -448,7 +476,7 @@ export function Game({ initialPuzzle }: Props) {
           {activeDragId && nextSlot ? (
             <div
               className={`cursor-grabbing shadow-2xl ${
-                dragTilt === "right" ? "rotate-[2deg]" : "rotate-[-2deg]"
+                dragTilt === "right" ? "rotate-[5deg]" : "rotate-[-5deg]"
               }`}
             >
               <EventCard
