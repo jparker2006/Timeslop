@@ -152,7 +152,7 @@ export function Game({ initialPuzzle }: Props) {
     currentPerfectRun: 0,
     bestPerfectRun: 0,
   });
-  const [difficulty, setDifficulty] = useState<Difficulty>("easy");
+  const [difficulty, setDifficulty] = useState<Difficulty>("hard");
 
   const slotsById = useMemo(() => {
     const m = new Map<string, RevealedSlot>();
@@ -403,7 +403,7 @@ export function Game({ initialPuzzle }: Props) {
 
       {canChangeDifficulty && (
         <div className="mb-5 grid grid-cols-2 gap-1.5 rounded-lg border border-zinc-300 dark:border-zinc-700 p-1">
-          {(["easy", "hard"] as const).map((d) => (
+          {(["hard", "insane"] as const).map((d) => (
             <button
               key={d}
               onClick={() => changeDifficulty(d)}
