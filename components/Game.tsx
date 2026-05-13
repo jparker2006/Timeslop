@@ -516,7 +516,7 @@ export function Game({ initialPuzzle }: Props) {
           {activeDragId && nextSlot ? (
             <div
               className={`cursor-grabbing shadow-2xl ${
-                dragTilt === "right" ? "rotate-[5deg]" : "rotate-[-5deg]"
+                dragTilt === "right" ? "rotate-[3deg]" : "rotate-[-3deg]"
               }`}
             >
               <EventCard
