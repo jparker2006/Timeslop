@@ -12,11 +12,11 @@ export const TOTAL_SLOTS = HISTORICAL_PER_PUZZLE + 1;
 const MIN_DISTINCT_ERAS = 3;
 const SHUFFLE_RETRIES = 30;
 
-// Easy: only editor-curated "selected" events from OnThisDay.
-// Hard: everything in the pool, including the broader/niche events.
+// Hard: only editor-curated "selected" events from OnThisDay.
+// Insane: everything in the pool, including the broader/niche events.
 const DIFFICULTY_FILTERS: Record<Difficulty, (e: HistoricalEvent) => boolean> = {
-  easy: (e) => e.selected === true,
-  hard: () => true,
+  hard: (e) => e.selected === true,
+  insane: () => true,
 };
 
 function filterByDifficulty(
@@ -92,7 +92,7 @@ export function composePuzzle(
   pool: HistoricalEvent[],
   recentPool: Headline[],
   excludeIds: Set<string> = new Set(),
-  difficulty: Difficulty = "easy",
+  difficulty: Difficulty = "hard",
 ): PuzzlePayload {
   const filteredPool = filterByDifficulty(pool, difficulty);
   const usableHistorical = applyExcludes(filteredPool, excludeIds, HISTORICAL_PER_PUZZLE);

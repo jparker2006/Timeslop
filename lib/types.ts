@@ -13,7 +13,7 @@ export const HistoricalEventSchema = z.object({
 });
 export type HistoricalEvent = z.infer<typeof HistoricalEventSchema>;
 
-export type Difficulty = "easy" | "hard";
+export type Difficulty = "hard" | "insane";
 
 export const HeadlineSchema = z.object({
   id: z.string(),

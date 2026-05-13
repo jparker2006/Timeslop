@@ -8,7 +8,7 @@ export const runtime = "nodejs";
 
 const Body = z.object({
   excludeIds: z.array(z.string()).optional(),
-  difficulty: z.enum(["easy", "hard"]).optional(),
+  difficulty: z.enum(["hard", "insane"]).optional(),
 });
 
 export async function POST(req: Request) {
@@ -24,7 +24,7 @@ export async function POST(req: Request) {
   }
 
   const excludeIds = new Set(parsed.data.excludeIds ?? []);
-  const difficulty = parsed.data.difficulty ?? "easy";
+  const difficulty = parsed.data.difficulty ?? "hard";
   const [pool, recent] = await Promise.all([
     loadHistoricalPool(),
     loadRecentPool(),
